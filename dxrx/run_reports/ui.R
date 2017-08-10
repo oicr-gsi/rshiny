@@ -1,22 +1,41 @@
 library(shiny)
 
 # Define UI for application that plots random distributions 
-shinyUI(pageWithSidebar(
+shinyUI(fluidPage(
   
-  # Application title
-  headerPanel("It's Alive!"),
+  titlePanel("DxRx Run Report Analysis"),
+  hr(),
   
-  # Sidebar with a slider input for number of observations
-  sidebarPanel(
-    sliderInput("bins",
-                  "Number of bins:",
-                  min = 1,
-                  max = 50,
-                  value = 30)
+  headerPanel("Percent Mapped on Target"),
+  plotOutput("percentMappedOnTargetPlot"),
+  hr(),
+  fluidRow(
+    column(3,
+           
+      sliderInput("percentMappedOnTargetThreshold",
+                "fail threshold:",
+                min = 1,
+                max = 100,
+                value = 60)
+    )
   ),
   
-  # Show a plot of the generated distribution
-  mainPanel(
-    plotOutput("distPlot", height=250)
+  hr(),
+  
+  headerPanel("Map Percent"),
+  plotOutput("mapPercentPlot"),
+  hr(),
+  hr(),
+  fluidRow(
+    column(3,
+           
+           sliderInput("mapPercentThreshold",
+                       "fail threshold:",
+                       min = 1,
+                       max = 100,
+                       value = 90)
+    )
   )
+  
+  
 ))
