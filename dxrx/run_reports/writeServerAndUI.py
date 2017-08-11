@@ -3,8 +3,8 @@
 #LIST of keys for dictionary of plot parameters
 plots_L = [
     "total-reads",
-    "insert-mean",
-    "percent-mapped"
+    "insert-mean"
+    #"percent-mapped"
     #"percent-on-target",
     #"mean-coverage"
 ]
