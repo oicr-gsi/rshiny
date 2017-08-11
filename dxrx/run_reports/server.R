@@ -19,10 +19,8 @@ shinyServer(function(input, output) {
     d <- data.frame(df$Library , df$record, as.numeric(gsub(",","",df$PF.Reads)))
     d$group <- as.factor((d[,3] > t)*1)
     colnames(d) <- c("sample","library","my_y","threshold")
-    
-    windowHeight <- max(d$my_y) * 1.10
-    
-    nFail <- nrow(d[which(d[,4] == 0),])
+windowHeight <- max(d$my_y) * 1.10
+nFail <- nrow(d[which(d[,4] == 0),])
     
     if (nFail == 0) {
       ggplot(d, aes(x=library, y=my_y)) + geom_bar(stat="identity" , aes(fill=threshold) ) + labs(x="all libraries", y="total reads (pass filter)") + scale_y_continuous(limits=c(0.0,windowHeight)) +
@@ -51,10 +49,8 @@ shinyServer(function(input, output) {
     d <- data.frame(df$Library, df$record, df$Insert_Mean)
     d$group <- as.factor((d[,3] > t)*1)
     colnames(d) <- c("sample","library","my_y","threshold")
-    
-    windowHeight <- max(d$my_y) * 1.10
-    
-    nFail <- nrow(d[which(d[,4] == 0),])
+windowHeight <- max(d$my_y) * 1.10
+nFail <- nrow(d[which(d[,4] == 0),])
     
     if (nFail == 0) {
       ggplot(d, aes(x=library, y=my_y)) + geom_bar(stat="identity" , aes(fill=threshold) ) + labs(x="all libraries", y="mean insert size") + scale_y_continuous(limits=c(0.0,windowHeight)) +
@@ -83,10 +79,8 @@ shinyServer(function(input, output) {
     d <- data.frame(df$Library , df$record, as.numeric(gsub("%","",df$Map.Percent)))
     d$group <- as.factor((d[,3] > t)*1)
     colnames(d) <- c("sample","library","my_y","threshold")
-    
-    windowHeight <- max(d$my_y) * 1.10
-    
-    nFail <- nrow(d[which(d[,4] == 0),])
+windowHeight <- 100.0
+nFail <- nrow(d[which(d[,4] == 0),])
     
     if (nFail == 0) {
       ggplot(d, aes(x=library, y=my_y)) + geom_bar(stat="identity" , aes(fill=threshold) ) + labs(x="all libraries", y="percent of reads mapped to hg19") + scale_y_continuous(limits=c(0.0,windowHeight)) +

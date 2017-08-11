@@ -23,8 +23,11 @@ plots_D = {
         "text_to_remove" : ",",
         "y_label" : "total reads (pass filter)",
         
-        "ui_title" : "Total Reads (Pass filter)",
-        "ui_default_threshold" : "0"
+        "window_height_variable" : "totalReadsWindowHeight",
+        "window_height_type" : "dynamic",
+        "window_height_max" : "na",
+        
+        "ui_title" : "Total Reads (Pass filter)"
     },  
     
     "insert-mean" : {
@@ -34,8 +37,11 @@ plots_D = {
         "text_to_remove" : "None",
         "y_label" : "mean insert size",
         
-        "ui_title" : "Mean Insert Size",
-        "ui_default_threshold" : "0"
+        "window_height_variable" : "insertMeanWindowHeight",
+        "window_height_type" : "dynamic",
+        "window_height_max" : "na",
+        
+        "ui_title" : "Mean Insert Size"
     },
     
     "percent-mapped" : {
@@ -45,8 +51,11 @@ plots_D = {
         "text_to_remove" : "%",
         "y_label" : "percent of reads mapped to hg19",
         
-        "ui_title" : "Percent Mapped",
-        "ui_default_threshold" : "0"
+        "window_height_variable" : "percentMappedWindowHeight",
+        "window_height_type" : "fixed",
+        "window_height_max" : "100.0",
+        
+        "ui_title" : "Percent Mapped"
     },
     
     "percent-on-target" : {
@@ -56,8 +65,11 @@ plots_D = {
         "text_to_remove" : "%",
         "y_label" : "percent of mapped reads on target",
         
-        "ui_title" : "Percent On Target",
-        "ui_default_threshold" : "0"
+        "window_height_variable" : "percentOntWindowHeight",
+        "window_height_type" : "fixed",
+        "window_height_max" : "100.0",
+        
+        "ui_title" : "Percent On Target"
     },
         
     "mean-coverage" : {
@@ -67,8 +79,11 @@ plots_D = {
         "text_to_remove" : "x",
         "y_label" : "mean coverage",
         
-        "ui_title" : "Mean Coverage",
-        "ui_default_threshold" : "0"
+        "window_height_variable" : "meanCoverageWindowHeight",
+        "window_height_type" : "dynamic",
+        "window_height_max" : "na",
+        
+        "ui_title" : "Mean Coverage"
     },
 }
 
@@ -111,11 +126,17 @@ for plot_key in plots_L:
     sRL.append(sr)
     
     sr = """    d$group <- as.factor((d[,3] > t)*1)
-    colnames(d) <- c("sample","library","my_y","threshold")
+    colnames(d) <- c("sample","library","my_y","threshold")"""
+    sRL.append(sr)
     
-    windowHeight <- max(d$my_y) * 1.10
+    sr=""
+    if pD["window_height_type"] == "dynamic":
+        sr = "windowHeight <- max(d$my_y) * 1.10"    
+    elif pD["window_height_type"] == "fixed":
+        sr = "windowHeight <- %s" % (pD["window_height_max"])
+    sRL.append(sr)
     
-    nFail <- nrow(d[which(d[,4] == 0),])
+    sr="""nFail <- nrow(d[which(d[,4] == 0),])
     
     if (nFail == 0) {
       ggplot(d, aes(x=library, y=my_y)) + geom_bar(stat="identity" , aes(fill=threshold) ) + labs(x="all libraries", y="%s") + scale_y_continuous(limits=c(0.0,windowHeight)) +
@@ -166,10 +187,16 @@ for plot_key in plots_L:
     pD = plots_D[plot_key]
     
     fail_slider_max_string = ""
-    if pD["text_to_remove"] == "None":
-        fail_slider_max_string = '''max(df$%s)''' % (pD["r_column"])
-    else:
-        fail_slider_max_string = '''max(as.numeric(gsub("%s","",df$%s))) * 1.10''' % (pD["text_to_remove"] , pD["r_column"])
+    if pD["window_height_type"] == "dynamic":
+        if pD["text_to_remove"] == "None":
+            fail_slider_max_string = '''max(df$%s)''' % (pD["r_column"])
+        else:
+            fail_slider_max_string = '''max(as.numeric(gsub("%s","",df$%s))) * 1.10''' % (pD["text_to_remove"] , pD["r_column"])
+            
+    elif pD["window_height_type"] == "fixed":
+        fail_slider_max_string = pD["window_height_max"]
+    
+    
     
     ur = """    headerPanel("%s"),
     plotOutput("%s"),
@@ -180,7 +207,7 @@ for plot_key in plots_L:
             "fail threshold:",
             min = 0,
             max = %s,
-            value = 60)
+            value = 0)
         )
     ),
     hr(),""" % (pD["ui_title"] , pD["plot_variable"] , pD["threshold_variable"] , fail_slider_max_string)

@@ -14,7 +14,7 @@ shinyUI(fluidPage(
             "fail threshold:",
             min = 0,
             max = max(as.numeric(gsub(",","",df$PF.Reads))) * 1.10,
-            value = 60)
+            value = 0)
         )
     ),
     hr(),
@@ -27,7 +27,7 @@ shinyUI(fluidPage(
             "fail threshold:",
             min = 0,
             max = max(df$Insert_Mean),
-            value = 60)
+            value = 0)
         )
     ),
     hr(),
@@ -39,8 +39,8 @@ shinyUI(fluidPage(
             sliderInput("percentMappedThreshold",
             "fail threshold:",
             min = 0,
-            max = max(as.numeric(gsub("%","",df$Map.Percent))) * 1.10,
-            value = 60)
+            max = 100.0,
+            value = 0)
         )
     ),
     hr()
