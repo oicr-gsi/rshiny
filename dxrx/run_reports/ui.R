@@ -12,8 +12,8 @@ shinyUI(fluidPage(
         column(3,
             sliderInput("totalReadsThreshold",
             "fail threshold:",
-            min = 1,
-            max = 200,
+            min = 0,
+            max = max(as.numeric(gsub(",","",df$PF.Reads))) * 1.10,
             value = 60)
         )
     ),
@@ -25,8 +25,8 @@ shinyUI(fluidPage(
         column(3,
             sliderInput("insertMeanThreshold",
             "fail threshold:",
-            min = 1,
-            max = 200,
+            min = 0,
+            max = max(df$Insert_Mean),
             value = 60)
         )
     ),

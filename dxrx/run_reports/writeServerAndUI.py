@@ -125,17 +125,19 @@ for plot_key in plots_L:
     sr = """    d$group <- as.factor((d[,3] > t)*1)
     colnames(d) <- c("sample","library","my_y","threshold")
     
+    windowHeight <- max(d$my_y) * 1.10
+    
     nFail <- nrow(d[which(d[,4] == 0),])
     
     if (nFail == 0) {
-      ggplot(d, aes(x=library, y=my_y)) + geom_bar(stat="identity" , aes(fill=threshold) ) + labs(x="all libraries", y="%s") + scale_y_continuous(limits=c(0.0,200.0)) +
+      ggplot(d, aes(x=library, y=my_y)) + geom_bar(stat="identity" , aes(fill=threshold) ) + labs(x="all libraries", y="%s") + scale_y_continuous(limits=c(0.0,windowHeight)) +
         geom_hline(yintercept=t, color="red", linetype="dashed") +
         geom_text(aes(x=0,y=t+2,label=t ), color="red", size=2) +
         theme(legend.position="none", axis.title.y=element_text(size=6), axis.title.x=element_text(size=6), axis.text.y=element_text(size=4), axis.text.x=element_text(size=4)) +
         scale_fill_manual(values=c("0" = gg_color_hue(2)[1], "1" = gg_color_hue(2)[2]))
       
     } else {
-      ggplot(d, aes(x=library, y=my_y)) + geom_bar(stat="identity" , aes(fill=threshold) ) + labs(x="all libraries", y="%s") + scale_y_continuous(limits=c(0.0,200.0)) +
+      ggplot(d, aes(x=library, y=my_y)) + geom_bar(stat="identity" , aes(fill=threshold) ) + labs(x="all libraries", y="%s") + scale_y_continuous(limits=c(0.0,windowHeight)) +
         geom_hline(yintercept=t, color="red", linetype="dashed") +
         geom_text(data=subset(d, my_y<t), aes(x=library,y=my_y-2,label=sample,hjust="right"), color="black", size=1 , angle=90) +
         geom_text(aes(x=0,y=t+2,label=t ), color="red", size=2) +
@@ -175,6 +177,12 @@ uRL.append(ur)
 for plot_key in plots_L:
     pD = plots_D[plot_key]
     
+    fail_slider_max_string = ""
+    if pD["text_to_remove"] == "None":
+        fail_slider_max_string = '''max(df$%s)''' % (pD["r_column"])
+    else:
+        fail_slider_max_string = '''max(as.numeric(gsub(",","",df$%s))) * 1.10''' % (pD["r_column"])
+    
     ur = """    headerPanel("%s"),
     plotOutput("%s"),
     hr(),
@@ -182,12 +190,12 @@ for plot_key in plots_L:
         column(3,
             sliderInput("%s",
             "fail threshold:",
-            min = 1,
-            max = 200,
+            min = 0,
+            max = %s,
             value = 60)
         )
     ),
-    hr(),""" % (pD["ui_title"] , pD["plot_variable"] , pD["threshold_variable"])
+    hr(),""" % (pD["ui_title"] , pD["plot_variable"] , pD["threshold_variable"] , fail_slider_max_string)
     uRL.append(ur)
 
 toreplace = uRL[-1]
