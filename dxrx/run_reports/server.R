@@ -14,7 +14,7 @@ shinyServer(function(input, output) {
     myseq <- seq(from=1,to=nrow(df))
     df$record <- myseq
 
-    t <- input$totalReadsThreshold
+    t <- input$totalReadsFailThreshold
 
     d <- data.frame(df$Library , df$record, as.numeric(gsub(",","",df$PF.Reads)))
     d$group <- as.factor((d[,3] > t)*1)
@@ -44,7 +44,7 @@ nFail <- nrow(d[which(d[,4] == 0),])
     myseq <- seq(from=1,to=nrow(df))
     df$record <- myseq
 
-    t <- input$insertMeanThreshold
+    t <- input$insertMeanFailThreshold
 
     d <- data.frame(df$Library, df$record, df$Insert_Mean)
     d$group <- as.factor((d[,3] > t)*1)
@@ -74,7 +74,7 @@ nFail <- nrow(d[which(d[,4] == 0),])
     myseq <- seq(from=1,to=nrow(df))
     df$record <- myseq
 
-    t <- input$percentMappedThreshold
+    t <- input$percentMappedFailThreshold
 
     d <- data.frame(df$Library , df$record, as.numeric(gsub("%","",df$Map.Percent)))
     d$group <- as.factor((d[,3] > t)*1)
@@ -104,7 +104,7 @@ nFail <- nrow(d[which(d[,4] == 0),])
     myseq <- seq(from=1,to=nrow(df))
     df$record <- myseq
 
-    t <- input$percentOntThreshold
+    t <- input$percentOntFailThreshold
 
     d <- data.frame(df$Library , df$record, as.numeric(gsub("%","",df$Percent.mapped.on.Target)))
     d$group <- as.factor((d[,3] > t)*1)
@@ -134,7 +134,7 @@ nFail <- nrow(d[which(d[,4] == 0),])
     myseq <- seq(from=1,to=nrow(df))
     df$record <- myseq
 
-    t <- input$meanCoverageThreshold
+    t <- input$meanCoverageFailThreshold
 
     d <- data.frame(df$Library , df$record, as.numeric(gsub("x","",df$Coverage)))
     d$group <- as.factor((d[,3] > t)*1)

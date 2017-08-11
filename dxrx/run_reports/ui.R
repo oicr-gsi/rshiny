@@ -10,11 +10,21 @@ shinyUI(fluidPage(
     hr(),
     fluidRow(
         column(3,
-            sliderInput("totalReadsThreshold",
+            sliderInput("totalReadsFailThreshold",
             "fail threshold:",
             min = 0,
             max = max(as.numeric(gsub(",","",df$PF.Reads))) * 1.10,
             value = 0)
+        ),
+        column(3,
+            selectInput("totalReadsGroup", "Group by:",
+                c("None" = "none",
+                "Run" = "run",
+                "Run and Lane" = "run_and_lane")
+                
+                
+            )
+            
         )
     ),
     hr(),
@@ -23,11 +33,21 @@ shinyUI(fluidPage(
     hr(),
     fluidRow(
         column(3,
-            sliderInput("insertMeanThreshold",
+            sliderInput("insertMeanFailThreshold",
             "fail threshold:",
             min = 0,
             max = max(df$Insert_Mean),
             value = 0)
+        ),
+        column(3,
+            selectInput("insertMeanGroup", "Group by:",
+                c("None" = "none",
+                "Run" = "run",
+                "Run and Lane" = "run_and_lane")
+                
+                
+            )
+            
         )
     ),
     hr(),
@@ -36,11 +56,21 @@ shinyUI(fluidPage(
     hr(),
     fluidRow(
         column(3,
-            sliderInput("percentMappedThreshold",
+            sliderInput("percentMappedFailThreshold",
             "fail threshold:",
             min = 0,
             max = 100.0,
             value = 0)
+        ),
+        column(3,
+            selectInput("percentMappedGroup", "Group by:",
+                c("None" = "none",
+                "Run" = "run",
+                "Run and Lane" = "run_and_lane")
+                
+                
+            )
+            
         )
     ),
     hr(),
@@ -49,11 +79,21 @@ shinyUI(fluidPage(
     hr(),
     fluidRow(
         column(3,
-            sliderInput("percentOntThreshold",
+            sliderInput("percentOntFailThreshold",
             "fail threshold:",
             min = 0,
             max = 100.0,
             value = 0)
+        ),
+        column(3,
+            selectInput("percentOntGroup", "Group by:",
+                c("None" = "none",
+                "Run" = "run",
+                "Run and Lane" = "run_and_lane")
+                
+                
+            )
+            
         )
     ),
     hr(),
@@ -62,11 +102,21 @@ shinyUI(fluidPage(
     hr(),
     fluidRow(
         column(3,
-            sliderInput("meanCoverageThreshold",
+            sliderInput("meanCoverageFailThreshold",
             "fail threshold:",
             min = 0,
             max = max(as.numeric(gsub("x","",df$Coverage))) * 1.10,
             value = 0)
+        ),
+        column(3,
+            selectInput("meanCoverageGroup", "Group by:",
+                c("None" = "none",
+                "Run" = "run",
+                "Run and Lane" = "run_and_lane")
+                
+                
+            )
+            
         )
     ),
     hr()

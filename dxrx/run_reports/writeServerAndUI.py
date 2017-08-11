@@ -17,13 +17,13 @@ uRL = []
 #DICTIONARY containing the parameters for the various barplots that will be produced through ggplot2
 plots_D = {
     "total-reads" : {
+        "rvar_prefix" : "totalReads",
         "plot_variable" : "totalReadsPlot",
         "threshold_variable" : "totalReadsThreshold",
         "r_column" : "PF.Reads",
         "text_to_remove" : ",",
         "y_label" : "total reads (pass filter)",
         
-        "window_height_variable" : "totalReadsWindowHeight",
         "window_height_type" : "dynamic",
         "window_height_max" : "na",
         
@@ -31,13 +31,13 @@ plots_D = {
     },  
     
     "insert-mean" : {
+        "rvar_prefix" : "insertMean",
         "plot_variable" : "insertMeanPlot",
         "threshold_variable" : "insertMeanThreshold",
         "r_column" : "Insert_Mean",
         "text_to_remove" : "None",
         "y_label" : "mean insert size",
         
-        "window_height_variable" : "insertMeanWindowHeight",
         "window_height_type" : "dynamic",
         "window_height_max" : "na",
         
@@ -45,13 +45,13 @@ plots_D = {
     },
     
     "percent-mapped" : {
+        "rvar_prefix" : "percentMapped",
         "plot_variable" : "percentMappedPlot",
         "threshold_variable" : "percentMappedThreshold",
         "r_column" : "Map.Percent",
         "text_to_remove" : "%",
         "y_label" : "percent of reads mapped to hg19",
         
-        "window_height_variable" : "percentMappedWindowHeight",
         "window_height_type" : "fixed",
         "window_height_max" : "100.0",
         
@@ -59,13 +59,13 @@ plots_D = {
     },
     
     "percent-on-target" : {
+        "rvar_prefix" : "percentOnt",
         "plot_variable" : "percentOntPlot",
         "threshold_variable" : "percentOntThreshold",
         "r_column" : "Percent.mapped.on.Target",
         "text_to_remove" : "%",
         "y_label" : "percent of mapped reads on target",
         
-        "window_height_variable" : "percentOntWindowHeight",
         "window_height_type" : "fixed",
         "window_height_max" : "100.0",
         
@@ -73,13 +73,13 @@ plots_D = {
     },
         
     "mean-coverage" : {
+        "rvar_prefix" : "meanCoverage",
         "plot_variable" : "meanCoveragePlot",
         "threshold_variable" : "meanCoverageThreshold",
         "r_column" : "Coverage",
         "text_to_remove" : "x",
         "y_label" : "mean coverage",
         
-        "window_height_variable" : "meanCoverageWindowHeight",
         "window_height_type" : "dynamic",
         "window_height_max" : "na",
         
@@ -110,12 +110,12 @@ sRL.append(sr)
 for plot_key in plots_L:
     pD = plots_D[plot_key]
     
-    sr = """    output$%s <- renderPlot({
+    sr = """    output$%sPlot <- renderPlot({
     myseq <- seq(from=1,to=nrow(df))
     df$record <- myseq
 
-    t <- input$%s
-""" % (pD["plot_variable"] , pD["threshold_variable"])
+    t <- input$%sFailThreshold
+""" % (pD["rvar_prefix"] , pD["rvar_prefix"])
     sRL.append(sr)
     
     sr = ""
@@ -199,18 +199,30 @@ for plot_key in plots_L:
     
     
     ur = """    headerPanel("%s"),
-    plotOutput("%s"),
+    plotOutput("%sPlot"),
     hr(),
     fluidRow(
         column(3,
-            sliderInput("%s",
+            sliderInput("%sFailThreshold",
             "fail threshold:",
             min = 0,
             max = %s,
             value = 0)
+        ),
+        column(3,
+            selectInput("%sGroup", "Group by:",
+                c("None" = "none",
+                "Run" = "run",
+                "Run and Lane" = "run_and_lane")
+                
+                
+            )
+            
         )
     ),
-    hr(),""" % (pD["ui_title"] , pD["plot_variable"] , pD["threshold_variable"] , fail_slider_max_string)
+    hr(),""" % (pD["ui_title"] , pD["rvar_prefix"] , \
+                pD["rvar_prefix"] , fail_slider_max_string,\
+                pD["rvar_prefix"] )
     uRL.append(ur)
 
 toreplace = uRL[-1]
