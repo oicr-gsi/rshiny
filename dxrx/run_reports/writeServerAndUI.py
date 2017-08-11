@@ -2,12 +2,11 @@
 
 #LIST of keys for dictionary of plot parameters
 plots_L = [
+    "total-reads",
     "insert-mean"
     #"percent-mapped",
     #"percent-on-target",
-    #"mean-coverage",
-    #"percent-covered-at-8x-or-higher",
-    #"minimum-coverage-for-90-percent-of-target"
+    #"mean-coverage"
 ]
 
 #sRL: code for server.R app
@@ -17,6 +16,17 @@ uRL = []
 
 #DICTIONARY containing the parameters for the various barplots that will be produced through ggplot2
 plots_D = {
+    "total-reads" : {
+        "plot_variable" : "totalReadsPlot",
+        "threshold_variable" : "totalReadsThreshold",
+        "r_column" : "PF.Reads",
+        "text_to_remove" : ",",
+        "y_label" : "total reads (pass filter)",
+        
+        "ui_title" : "Total Reads (Pass filter)",
+        "ui_default_threshold" : "0"
+    },  
+    
     "insert-mean" : {
         "plot_variable" : "insertMeanPlot",
         "threshold_variable" : "insertMeanThreshold",
@@ -25,7 +35,7 @@ plots_D = {
         "y_label" : "mean insert size",
         
         "ui_title" : "Mean Insert Size",
-        "ui_default_threshold" : "75",
+        "ui_default_threshold" : "75"
     }
     
 #    "percent-mapped" : {
