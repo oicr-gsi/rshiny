@@ -43,6 +43,32 @@ shinyUI(fluidPage(
             value = 0)
         )
     ),
+    hr(),
+    headerPanel("Percent On Target"),
+    plotOutput("percentOntPlot"),
+    hr(),
+    fluidRow(
+        column(3,
+            sliderInput("percentOntThreshold",
+            "fail threshold:",
+            min = 0,
+            max = 100.0,
+            value = 0)
+        )
+    ),
+    hr(),
+    headerPanel("Mean Coverage"),
+    plotOutput("meanCoveragePlot"),
+    hr(),
+    fluidRow(
+        column(3,
+            sliderInput("meanCoverageThreshold",
+            "fail threshold:",
+            min = 0,
+            max = max(as.numeric(gsub("x","",df$Coverage))) * 1.10,
+            value = 0)
+        )
+    ),
     hr()
 ))
 

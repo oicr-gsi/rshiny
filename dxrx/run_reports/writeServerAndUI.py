@@ -4,9 +4,9 @@
 plots_L = [
     "total-reads",
     "insert-mean",
-    "percent-mapped"
-    #"percent-on-target",
-    #"mean-coverage"
+    "percent-mapped",
+    "percent-on-target",
+    "mean-coverage"
 ]
 
 #sRL: code for server.R app
