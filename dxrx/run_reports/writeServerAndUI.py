@@ -85,7 +85,7 @@ gg_color_hue <- function(n) {
   hcl(h = hues, l = 65, c = 100)[1:n]
 }
 
-df <- read.table("/home/ubuntu/data/run_reports/project_only/dxrx.all.lanes.tsv",header=TRUE,sep="\t")
+df <- read.table("/home/ubuntu/data/run_reports/project_only/dxrx.all.lanes.tsv",header=TRUE,sep="\\t")
 
 shinyServer(function(input, output) {
 """
@@ -97,22 +97,22 @@ sRL.append(sr)
 for plot_key in plots_L:
     pD = plots_D[plot_key]
     
-    sr = """output$%s <- renderPlot({
-myseq <- seq(from=1,to=nrow(df))
-df$record <- myseq
+    sr = """    output$%s <- renderPlot({
+    myseq <- seq(from=1,to=nrow(df))
+    df$record <- myseq
 
-t <- input$%s
+    t <- input$%s
 """ % (pD["plot_variable"] , pD["threshold_variable"])
     sRL.append(sr)
     
     sr = ""
     if pD["text_to_remove"] == "None":
-        sr = '''d <- data.frame(df$Library, df$record, df$%s)''' % (pD["r_column"])
+        sr = '''    d <- data.frame(df$Library, df$record, df$%s)''' % (pD["r_column"])
     else:
-        sr = '''d <- data.frame(df$Library , df$record, as.numeric(gsub("%s","",df$%s)))''' % (pD["text_to_remove"] , pD["r_column"])
+        sr = '''    d <- data.frame(df$Library , df$record, as.numeric(gsub("%s","",df$%s)))''' % (pD["text_to_remove"] , pD["r_column"])
     sRL.append(sr)
     
-    sr = """d$group <- as.factor((d[,3] > t)*1)
+    sr = """    d$group <- as.factor((d[,3] > t)*1)
     colnames(d) <- c("sample","library","my_y","threshold")
     
     nFail <- nrow(d[which(d[,4] == 0),])
@@ -125,7 +125,7 @@ t <- input$%s
         scale_fill_manual(values=c("0" = gg_color_hue(2)[1], "1" = gg_color_hue(2)[2]))
       
     } else {
-      ggplot(d, aes(x=library, y=my_y)) + geom_bar(stat="identity" , aes(fill=threshold) ) + labs(x="all", y="%s") + scale_y_continuous(limits=c(0.0,200.0)) +
+      ggplot(d, aes(x=library, y=my_y)) + geom_bar(stat="identity" , aes(fill=threshold) ) + labs(x="all libraries", y="%s") + scale_y_continuous(limits=c(0.0,200.0)) +
         geom_hline(yintercept=t, color="red", linetype="dashed") +
         geom_text(data=subset(d, my_y<t), aes(x=library,y=my_y-2,label=sample,hjust="right"), color="black", size=1 , angle=90) +
         geom_text(aes(x=0,y=t+2,label=t ), color="red", size=2) +
@@ -134,7 +134,7 @@ t <- input$%s
     }  
     
     
-  })""" % (pD["y_label"])
+    })""" % (pD["y_label"] , pD["y_label"])
     sRL.append(sr)
 
 
@@ -153,7 +153,7 @@ sRL.append(sr)
 
 ###INITIAL RSHINY UI R CODE
 ur = """library(shiny)
-df <- read.table("/home/ubuntu/data/run_reports/project_only/dxrx.all.lanes.tsv",header=TRUE,sep="\t")
+df <- read.table("/home/ubuntu/data/run_reports/project_only/dxrx.all.lanes.tsv",header=TRUE,sep="\\t")
 
 shinyUI(fluidPage(
     titlePanel("DxRx Run Report Analysis),
@@ -163,32 +163,32 @@ uRL.append(ur)
 
 ###PER PLOT RSHINY UI R CODE
 for plot_key in plots_L: 
-    ur = """headerPanel("%s"),
-plotOutput("%s"),
-hr(),
-fluidRow(
-    column(3,
-        sliderInput("%s",
-        "fail threshold:",
-        min = 1,
-        max = 200,
-        value = 60)
-    )
-),
-hr(),
+    ur = """    headerPanel("%s"),
+    plotOutput("%s"),
+    hr(),
+    fluidRow(
+        column(3,
+            sliderInput("%s",
+            "fail threshold:",
+            min = 1,
+            max = 200,
+            value = 60)
+        )
+    ),
+    hr(),""" % (pD["ui_title"] , pD["plot_variable"] , pD["threshold_variable"])
+    uRL.append(ur)
 
-""" % (pD["ui_title"] , pD["plot_variable"] , pD["threshold_variable"])
-uRL.append(ur)
-
-uRL[-1] = uRL[-1][:-1]
+toreplace = uRL[-1]
+uRL.pop()
+uRL.append(toreplace[:-1])
 
 #ENDING RSHINY UI R CODE
 ur = """))
 """
 uRL.append(ur)
 
-print "\n".join(sRL)
-print "**********"
-print "\n".join(uRL)
+sROut = "server.R"
+open(sROut,"w").write("\n".join(sRL)+"\n")
 
-
+uROut = "ui.R"
+open(uROut,"w").write("\n".join(uRL)+"\n")
