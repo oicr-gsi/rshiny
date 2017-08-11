@@ -3,10 +3,10 @@
 #LIST of keys for dictionary of plot parameters
 plots_L = [
     "total-reads",
-    "insert-mean"
-    #"percent-mapped",
-    #"percent-on-target",
-    #"mean-coverage"
+    "insert-mean",
+    "percent-mapped",
+    "percent-on-target",
+    "mean-coverage"
 ]
 
 #sRL: code for server.R app
@@ -35,53 +35,41 @@ plots_D = {
         "y_label" : "mean insert size",
         
         "ui_title" : "Mean Insert Size",
-        "ui_default_threshold" : "75"
-    }
+        "ui_default_threshold" : "0"
+    },
     
-#    "percent-mapped" : {
-#        "output_image" : plot_dir+"/00-percent-mapped.png",
-#        "column_header" : "Mapped %",
-#        "text_to_remove" : "%",
-#        "threshold" : "90",
-#        "y_label" : "% reads mapped to reference"
-#    },
+    "percent-mapped" : {
+        "plot_variable" : "percentMappedPlot",
+        "threshold_variable" : "percentMappedThreshold",
+        "r_column" : "Map.Percent",
+        "text_to_remove" : "%",
+        "y_label" : "percent of reads mapped to hg19",
+        
+        "ui_title" : "Percent Mapped",
+        "ui_default_threshold" : "0"
+    },
     
-#    "percent-on-target" : {
-#        "output_image" : plot_dir+"/01-percent-on-target.png",
-#        "r_column" : "Reads.on.Target..",
-#        "column_header" : "Reads on Target %",
-#        "text_to_remove" : "%",
-#        "threshold" : "60",
-#        "y_label" : "% reads ONT"
-#    },
+    "percent-on-target" : {
+        "plot_variable" : "percentOntPlot",
+        "threshold_variable" : "percentOntThreshold",
+        "r_column" : "Percent.mapped.on.Target",
+        "text_to_remove" : "%",
+        "y_label" : "percent of mapped reads on target",
         
-#    "mean-coverage" : {
-#        "output_image" : plot_dir+"/02-mean-coverage.png",
-#        "r_column" : "Aver..Coverage",
-#        "column_header" : "Aver. Coverage",
-#        "text_to_remove" : "x",
-#        "threshold" : "50",
-#        "y_label" : "mean coverage"
-#    },
+        "ui_title" : "Percent On Target",
+        "ui_default_threshold" : "0"
+    },
         
-#    "percent-covered-at-8x-or-higher" : {
-#        "output_image" : plot_dir+"/03-percent-covered-at-8x-or-higher.png",
-#        "r_column" : "Base.coverage.at.8x",
-#        "column_header" : "Base coverage at 8x",
-#        "text_to_remove" : "%",
-#        "threshold" : "90",
-#        "y_label" : "percent of target bases covered at 8x or higher"
-#    },
+    "mean-coverage" : {
+        "plot_variable" : "meanCoveragePlot",
+        "threshold_variable" : "meanCoverageThreshold",
+        "r_column" : "Coverage",
+        "text_to_remove" : "x",
+        "y_label" : "mean coverage",
         
-#    "minimum-coverage-for-90-percent-of-target" : {
-#        "output_image" : plot_dir+"/04-90-percent-of-target-covered-at-minimum.png",
-#        "r_column" : "X90..covered.at",
-#        "column_header" : "90% covered at",
-#        "text_to_remove" : "x",
-#        "threshold" : "8",
-#        "y_label" : "minimum level of coverage for 90% of target region"
-#    }
-    
+        "ui_title" : "Mean Coverage",
+        "ui_default_threshold" : "0"
+    },
 }
 
 ###BEGINNING OF SERVER R CODE
