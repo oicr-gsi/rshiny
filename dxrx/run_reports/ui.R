@@ -30,6 +30,19 @@ shinyUI(fluidPage(
             value = 60)
         )
     ),
+    hr(),
+    headerPanel("Percent Mapped"),
+    plotOutput("percentMappedPlot"),
+    hr(),
+    fluidRow(
+        column(3,
+            sliderInput("percentMappedThreshold",
+            "fail threshold:",
+            min = 0,
+            max = max(as.numeric(gsub("%","",df$Map.Percent))) * 1.10,
+            value = 60)
+        )
+    ),
     hr()
 ))
 

@@ -3,8 +3,8 @@
 #LIST of keys for dictionary of plot parameters
 plots_L = [
     "total-reads",
-    "insert-mean"
-    #"percent-mapped"
+    "insert-mean",
+    "percent-mapped"
     #"percent-on-target",
     #"mean-coverage"
 ]
@@ -169,7 +169,7 @@ for plot_key in plots_L:
     if pD["text_to_remove"] == "None":
         fail_slider_max_string = '''max(df$%s)''' % (pD["r_column"])
     else:
-        fail_slider_max_string = '''max(as.numeric(gsub(",","",df$%s))) * 1.10''' % (pD["r_column"])
+        fail_slider_max_string = '''max(as.numeric(gsub("%s","",df$%s))) * 1.10''' % (pD["text_to_remove"] , pD["r_column"])
     
     ur = """    headerPanel("%s"),
     plotOutput("%s"),
