@@ -172,7 +172,9 @@ shinyUI(fluidPage(
 uRL.append(ur)
 
 ###PER PLOT RSHINY UI R CODE
-for plot_key in plots_L: 
+for plot_key in plots_L:
+    pD = plots_D[plot_key]
+    
     ur = """    headerPanel("%s"),
     plotOutput("%s"),
     hr(),

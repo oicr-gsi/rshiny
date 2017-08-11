@@ -5,12 +5,12 @@ shinyUI(fluidPage(
     titlePanel("DxRx Run Report Analysis"),
     hr(), 
 
-    headerPanel("Mean Insert Size"),
-    plotOutput("insertMeanPlot"),
+    headerPanel("Total Reads (Pass filter)"),
+    plotOutput("totalReadsPlot"),
     hr(),
     fluidRow(
         column(3,
-            sliderInput("insertMeanThreshold",
+            sliderInput("totalReadsThreshold",
             "fail threshold:",
             min = 1,
             max = 200,
