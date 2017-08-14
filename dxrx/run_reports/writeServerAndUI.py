@@ -112,10 +112,24 @@ for plot_key in plots_L:
     
     sr = """    output$%sPlot <- renderPlot({
     myseq <- seq(from=1,to=nrow(df))
-    df$record <- myseq
 
     t <- input$%sFailThreshold
 """ % (pD["rvar_prefix"] , pD["rvar_prefix"])
+    sRL.append(sr)
+    
+    
+    sr = """sortby <- input$%sGroup
+    if (sortby == "Run") {
+        df <- df[order(df$Run),]
+    } else if (sortby == "Lane") {
+        df <- df[order(df$Lane),]
+    } else if (sortby == "Run_Lane") {
+        df <- df[order(df$Run_Lane),]
+    }
+""" % (pD["rvar_prefix"])
+    sRL.append(sr)
+    
+    sr = "df$record <- myseq"
     sRL.append(sr)
     
     sr = ""
@@ -125,9 +139,13 @@ for plot_key in plots_L:
         sr = '''    d <- data.frame(df$Library , df$record, as.numeric(gsub("%s","",df$%s)))''' % (pD["text_to_remove"] , pD["r_column"])
     sRL.append(sr)
     
-    sr = """    d$group <- as.factor((d[,3] > t)*1)
+    sr = """d$group <- as.factor((d[,3] > t)*1)
+    
+    
     colnames(d) <- c("sample","library","my_y","threshold")"""
     sRL.append(sr)
+    
+    #df$record <- myseq
     
     sr=""
     if pD["window_height_type"] == "dynamic":
@@ -213,9 +231,9 @@ for plot_key in plots_L:
         column(3,
             selectInput("%sGroup", "Group by:",
                 c("None" = "none",
-                "Run" = "run",
-                "Run and Lane" = "run_and_lane")
-                
+                "Run" = "Run",
+                "Lane" = "Lane",
+                "Run and Lane" = "Run_Lane")
                 
             )
             

@@ -20,9 +20,9 @@ shinyUI(fluidPage(
         column(3,
             selectInput("totalReadsGroup", "Group by:",
                 c("None" = "none",
-                "Run" = "run",
-                "Run and Lane" = "run_and_lane")
-                
+                "Run" = "Run",
+                "Lane" = "Lane",
+                "Run and Lane" = "Run_Lane")
                 
             )
             
@@ -43,9 +43,9 @@ shinyUI(fluidPage(
         column(3,
             selectInput("insertMeanGroup", "Group by:",
                 c("None" = "none",
-                "Run" = "run",
-                "Run and Lane" = "run_and_lane")
-                
+                "Run" = "Run",
+                "Lane" = "Lane",
+                "Run and Lane" = "Run_Lane")
                 
             )
             
@@ -66,9 +66,9 @@ shinyUI(fluidPage(
         column(3,
             selectInput("percentMappedGroup", "Group by:",
                 c("None" = "none",
-                "Run" = "run",
-                "Run and Lane" = "run_and_lane")
-                
+                "Run" = "Run",
+                "Lane" = "Lane",
+                "Run and Lane" = "Run_Lane")
                 
             )
             
@@ -89,9 +89,9 @@ shinyUI(fluidPage(
         column(3,
             selectInput("percentOntGroup", "Group by:",
                 c("None" = "none",
-                "Run" = "run",
-                "Run and Lane" = "run_and_lane")
-                
+                "Run" = "Run",
+                "Lane" = "Lane",
+                "Run and Lane" = "Run_Lane")
                 
             )
             
@@ -112,9 +112,9 @@ shinyUI(fluidPage(
         column(3,
             selectInput("meanCoverageGroup", "Group by:",
                 c("None" = "none",
-                "Run" = "run",
-                "Run and Lane" = "run_and_lane")
-                
+                "Run" = "Run",
+                "Lane" = "Lane",
+                "Run and Lane" = "Run_Lane")
                 
             )
             
