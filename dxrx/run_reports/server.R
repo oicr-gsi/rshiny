@@ -20,23 +20,23 @@ df <- read.table("/home/ubuntu/data/run_reports/project_only/dxrx.all.lanes.tsv"
     d$group <- as.factor((d[,3] > t)*1)
     colnames(d) <- c("sample","library","my_y","threshold")
 windowHeight <- max(d$my_y) * 1.10
-nFail <- nrow(d[which(d[,4] == 0),])
+plot <- ggplot(d, aes(x=library, y=my_y)) + geom_bar(stat="identity" , aes(fill=threshold) ) + labs(x="all libraries", y="total reads (pass filter)") + scale_y_continuous(limits=c(0.0,windowHeight))
+    plot <- plotBuild + geom_hline(yintercept=t, color="red", linetype="dashed")
+    plot <- plotBuild + geom_text(aes(x=0,y=t+2,label=t ), color="red", size=2)
     
-    if (nFail == 0) {
-      ggplot(d, aes(x=library, y=my_y)) + geom_bar(stat="identity" , aes(fill=threshold) ) + labs(x="all libraries", y="total reads (pass filter)") + scale_y_continuous(limits=c(0.0,windowHeight)) +
-        geom_hline(yintercept=t, color="red", linetype="dashed") +
-        geom_text(aes(x=0,y=t+2,label=t ), color="red", size=2) +
-        theme(legend.position="none", axis.title.y=element_text(size=6), axis.title.x=element_text(size=6), axis.text.y=element_text(size=4), axis.text.x=element_text(size=4)) +
-        scale_fill_manual(values=c("0" = gg_color_hue(2)[1], "1" = gg_color_hue(2)[2]))
+    nFail <- nrow(d[which(d[,4] == 0),])
+    
+    if (nFail > 0) {
+        plot <- plot + geom_text(data=subset(d, my_y<t), aes(x=library,y=my_y-2,label=sample,hjust="right"), color="black", size=1 , angle=90)
+    }
       
-    } else {
-      ggplot(d, aes(x=library, y=my_y)) + geom_bar(stat="identity" , aes(fill=threshold) ) + labs(x="all libraries", y="total reads (pass filter)") + scale_y_continuous(limits=c(0.0,windowHeight)) +
-        geom_hline(yintercept=t, color="red", linetype="dashed") +
-        geom_text(data=subset(d, my_y<t), aes(x=library,y=my_y-2,label=sample,hjust="right"), color="black", size=1 , angle=90) +
-        geom_text(aes(x=0,y=t+2,label=t ), color="red", size=2) +
-        theme(legend.position="none", axis.title.y=element_text(size=6), axis.title.x=element_text(size=6), axis.text.y=element_text(size=4), axis.text.x=element_text(size=4)) +
-        scale_fill_manual(values=c("0" = gg_color_hue(2)[1], "1" = gg_color_hue(2)[2]))
-    }  
+    plot <- plot + theme(legend.position="none", axis.title.y=element_text(size=6), axis.title.x=element_text(size=6), axis.text.y=element_text(size=4), axis.text.x=element_text(size=4)) +
+    plot <- plot + scale_fill_manual(values=c("0" = gg_color_hue(2)[1], "1" = gg_color_hue(2)[2]))
+    
+    plot
+        
+        
+      
     
     
     })
@@ -50,23 +50,23 @@ nFail <- nrow(d[which(d[,4] == 0),])
     d$group <- as.factor((d[,3] > t)*1)
     colnames(d) <- c("sample","library","my_y","threshold")
 windowHeight <- max(d$my_y) * 1.10
-nFail <- nrow(d[which(d[,4] == 0),])
+plot <- ggplot(d, aes(x=library, y=my_y)) + geom_bar(stat="identity" , aes(fill=threshold) ) + labs(x="all libraries", y="mean insert size") + scale_y_continuous(limits=c(0.0,windowHeight))
+    plot <- plotBuild + geom_hline(yintercept=t, color="red", linetype="dashed")
+    plot <- plotBuild + geom_text(aes(x=0,y=t+2,label=t ), color="red", size=2)
     
-    if (nFail == 0) {
-      ggplot(d, aes(x=library, y=my_y)) + geom_bar(stat="identity" , aes(fill=threshold) ) + labs(x="all libraries", y="mean insert size") + scale_y_continuous(limits=c(0.0,windowHeight)) +
-        geom_hline(yintercept=t, color="red", linetype="dashed") +
-        geom_text(aes(x=0,y=t+2,label=t ), color="red", size=2) +
-        theme(legend.position="none", axis.title.y=element_text(size=6), axis.title.x=element_text(size=6), axis.text.y=element_text(size=4), axis.text.x=element_text(size=4)) +
-        scale_fill_manual(values=c("0" = gg_color_hue(2)[1], "1" = gg_color_hue(2)[2]))
+    nFail <- nrow(d[which(d[,4] == 0),])
+    
+    if (nFail > 0) {
+        plot <- plot + geom_text(data=subset(d, my_y<t), aes(x=library,y=my_y-2,label=sample,hjust="right"), color="black", size=1 , angle=90)
+    }
       
-    } else {
-      ggplot(d, aes(x=library, y=my_y)) + geom_bar(stat="identity" , aes(fill=threshold) ) + labs(x="all libraries", y="mean insert size") + scale_y_continuous(limits=c(0.0,windowHeight)) +
-        geom_hline(yintercept=t, color="red", linetype="dashed") +
-        geom_text(data=subset(d, my_y<t), aes(x=library,y=my_y-2,label=sample,hjust="right"), color="black", size=1 , angle=90) +
-        geom_text(aes(x=0,y=t+2,label=t ), color="red", size=2) +
-        theme(legend.position="none", axis.title.y=element_text(size=6), axis.title.x=element_text(size=6), axis.text.y=element_text(size=4), axis.text.x=element_text(size=4)) +
-        scale_fill_manual(values=c("0" = gg_color_hue(2)[1], "1" = gg_color_hue(2)[2]))
-    }  
+    plot <- plot + theme(legend.position="none", axis.title.y=element_text(size=6), axis.title.x=element_text(size=6), axis.text.y=element_text(size=4), axis.text.x=element_text(size=4)) +
+    plot <- plot + scale_fill_manual(values=c("0" = gg_color_hue(2)[1], "1" = gg_color_hue(2)[2]))
+    
+    plot
+        
+        
+      
     
     
     })
@@ -80,23 +80,23 @@ nFail <- nrow(d[which(d[,4] == 0),])
     d$group <- as.factor((d[,3] > t)*1)
     colnames(d) <- c("sample","library","my_y","threshold")
 windowHeight <- 100.0
-nFail <- nrow(d[which(d[,4] == 0),])
+plot <- ggplot(d, aes(x=library, y=my_y)) + geom_bar(stat="identity" , aes(fill=threshold) ) + labs(x="all libraries", y="percent of reads mapped to hg19") + scale_y_continuous(limits=c(0.0,windowHeight))
+    plot <- plotBuild + geom_hline(yintercept=t, color="red", linetype="dashed")
+    plot <- plotBuild + geom_text(aes(x=0,y=t+2,label=t ), color="red", size=2)
     
-    if (nFail == 0) {
-      ggplot(d, aes(x=library, y=my_y)) + geom_bar(stat="identity" , aes(fill=threshold) ) + labs(x="all libraries", y="percent of reads mapped to hg19") + scale_y_continuous(limits=c(0.0,windowHeight)) +
-        geom_hline(yintercept=t, color="red", linetype="dashed") +
-        geom_text(aes(x=0,y=t+2,label=t ), color="red", size=2) +
-        theme(legend.position="none", axis.title.y=element_text(size=6), axis.title.x=element_text(size=6), axis.text.y=element_text(size=4), axis.text.x=element_text(size=4)) +
-        scale_fill_manual(values=c("0" = gg_color_hue(2)[1], "1" = gg_color_hue(2)[2]))
+    nFail <- nrow(d[which(d[,4] == 0),])
+    
+    if (nFail > 0) {
+        plot <- plot + geom_text(data=subset(d, my_y<t), aes(x=library,y=my_y-2,label=sample,hjust="right"), color="black", size=1 , angle=90)
+    }
       
-    } else {
-      ggplot(d, aes(x=library, y=my_y)) + geom_bar(stat="identity" , aes(fill=threshold) ) + labs(x="all libraries", y="percent of reads mapped to hg19") + scale_y_continuous(limits=c(0.0,windowHeight)) +
-        geom_hline(yintercept=t, color="red", linetype="dashed") +
-        geom_text(data=subset(d, my_y<t), aes(x=library,y=my_y-2,label=sample,hjust="right"), color="black", size=1 , angle=90) +
-        geom_text(aes(x=0,y=t+2,label=t ), color="red", size=2) +
-        theme(legend.position="none", axis.title.y=element_text(size=6), axis.title.x=element_text(size=6), axis.text.y=element_text(size=4), axis.text.x=element_text(size=4)) +
-        scale_fill_manual(values=c("0" = gg_color_hue(2)[1], "1" = gg_color_hue(2)[2]))
-    }  
+    plot <- plot + theme(legend.position="none", axis.title.y=element_text(size=6), axis.title.x=element_text(size=6), axis.text.y=element_text(size=4), axis.text.x=element_text(size=4)) +
+    plot <- plot + scale_fill_manual(values=c("0" = gg_color_hue(2)[1], "1" = gg_color_hue(2)[2]))
+    
+    plot
+        
+        
+      
     
     
     })
@@ -110,23 +110,23 @@ nFail <- nrow(d[which(d[,4] == 0),])
     d$group <- as.factor((d[,3] > t)*1)
     colnames(d) <- c("sample","library","my_y","threshold")
 windowHeight <- 100.0
-nFail <- nrow(d[which(d[,4] == 0),])
+plot <- ggplot(d, aes(x=library, y=my_y)) + geom_bar(stat="identity" , aes(fill=threshold) ) + labs(x="all libraries", y="percent of mapped reads on target") + scale_y_continuous(limits=c(0.0,windowHeight))
+    plot <- plotBuild + geom_hline(yintercept=t, color="red", linetype="dashed")
+    plot <- plotBuild + geom_text(aes(x=0,y=t+2,label=t ), color="red", size=2)
     
-    if (nFail == 0) {
-      ggplot(d, aes(x=library, y=my_y)) + geom_bar(stat="identity" , aes(fill=threshold) ) + labs(x="all libraries", y="percent of mapped reads on target") + scale_y_continuous(limits=c(0.0,windowHeight)) +
-        geom_hline(yintercept=t, color="red", linetype="dashed") +
-        geom_text(aes(x=0,y=t+2,label=t ), color="red", size=2) +
-        theme(legend.position="none", axis.title.y=element_text(size=6), axis.title.x=element_text(size=6), axis.text.y=element_text(size=4), axis.text.x=element_text(size=4)) +
-        scale_fill_manual(values=c("0" = gg_color_hue(2)[1], "1" = gg_color_hue(2)[2]))
+    nFail <- nrow(d[which(d[,4] == 0),])
+    
+    if (nFail > 0) {
+        plot <- plot + geom_text(data=subset(d, my_y<t), aes(x=library,y=my_y-2,label=sample,hjust="right"), color="black", size=1 , angle=90)
+    }
       
-    } else {
-      ggplot(d, aes(x=library, y=my_y)) + geom_bar(stat="identity" , aes(fill=threshold) ) + labs(x="all libraries", y="percent of mapped reads on target") + scale_y_continuous(limits=c(0.0,windowHeight)) +
-        geom_hline(yintercept=t, color="red", linetype="dashed") +
-        geom_text(data=subset(d, my_y<t), aes(x=library,y=my_y-2,label=sample,hjust="right"), color="black", size=1 , angle=90) +
-        geom_text(aes(x=0,y=t+2,label=t ), color="red", size=2) +
-        theme(legend.position="none", axis.title.y=element_text(size=6), axis.title.x=element_text(size=6), axis.text.y=element_text(size=4), axis.text.x=element_text(size=4)) +
-        scale_fill_manual(values=c("0" = gg_color_hue(2)[1], "1" = gg_color_hue(2)[2]))
-    }  
+    plot <- plot + theme(legend.position="none", axis.title.y=element_text(size=6), axis.title.x=element_text(size=6), axis.text.y=element_text(size=4), axis.text.x=element_text(size=4)) +
+    plot <- plot + scale_fill_manual(values=c("0" = gg_color_hue(2)[1], "1" = gg_color_hue(2)[2]))
+    
+    plot
+        
+        
+      
     
     
     })
@@ -140,23 +140,23 @@ nFail <- nrow(d[which(d[,4] == 0),])
     d$group <- as.factor((d[,3] > t)*1)
     colnames(d) <- c("sample","library","my_y","threshold")
 windowHeight <- max(d$my_y) * 1.10
-nFail <- nrow(d[which(d[,4] == 0),])
+plot <- ggplot(d, aes(x=library, y=my_y)) + geom_bar(stat="identity" , aes(fill=threshold) ) + labs(x="all libraries", y="mean coverage") + scale_y_continuous(limits=c(0.0,windowHeight))
+    plot <- plotBuild + geom_hline(yintercept=t, color="red", linetype="dashed")
+    plot <- plotBuild + geom_text(aes(x=0,y=t+2,label=t ), color="red", size=2)
     
-    if (nFail == 0) {
-      ggplot(d, aes(x=library, y=my_y)) + geom_bar(stat="identity" , aes(fill=threshold) ) + labs(x="all libraries", y="mean coverage") + scale_y_continuous(limits=c(0.0,windowHeight)) +
-        geom_hline(yintercept=t, color="red", linetype="dashed") +
-        geom_text(aes(x=0,y=t+2,label=t ), color="red", size=2) +
-        theme(legend.position="none", axis.title.y=element_text(size=6), axis.title.x=element_text(size=6), axis.text.y=element_text(size=4), axis.text.x=element_text(size=4)) +
-        scale_fill_manual(values=c("0" = gg_color_hue(2)[1], "1" = gg_color_hue(2)[2]))
+    nFail <- nrow(d[which(d[,4] == 0),])
+    
+    if (nFail > 0) {
+        plot <- plot + geom_text(data=subset(d, my_y<t), aes(x=library,y=my_y-2,label=sample,hjust="right"), color="black", size=1 , angle=90)
+    }
       
-    } else {
-      ggplot(d, aes(x=library, y=my_y)) + geom_bar(stat="identity" , aes(fill=threshold) ) + labs(x="all libraries", y="mean coverage") + scale_y_continuous(limits=c(0.0,windowHeight)) +
-        geom_hline(yintercept=t, color="red", linetype="dashed") +
-        geom_text(data=subset(d, my_y<t), aes(x=library,y=my_y-2,label=sample,hjust="right"), color="black", size=1 , angle=90) +
-        geom_text(aes(x=0,y=t+2,label=t ), color="red", size=2) +
-        theme(legend.position="none", axis.title.y=element_text(size=6), axis.title.x=element_text(size=6), axis.text.y=element_text(size=4), axis.text.x=element_text(size=4)) +
-        scale_fill_manual(values=c("0" = gg_color_hue(2)[1], "1" = gg_color_hue(2)[2]))
-    }  
+    plot <- plot + theme(legend.position="none", axis.title.y=element_text(size=6), axis.title.x=element_text(size=6), axis.text.y=element_text(size=4), axis.text.x=element_text(size=4)) +
+    plot <- plot + scale_fill_manual(values=c("0" = gg_color_hue(2)[1], "1" = gg_color_hue(2)[2]))
+    
+    plot
+        
+        
+      
     
     
     })
