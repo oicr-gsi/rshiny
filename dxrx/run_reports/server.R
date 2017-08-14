@@ -17,7 +17,7 @@ df <- read.table("/home/ubuntu/data/run_reports/project_only/dxrx.all.lanes.tsv"
 
 sortby <- input$totalReadsGroup
     if (sortby != "none") {
-        df <- df[order(df$[[sortby]]),]
+        df <- df[order(df[[sortby]]),]
     }
 
 df$record <- myseq
@@ -54,7 +54,7 @@ plot <- ggplot(d, aes(x=library, y=my_y)) + geom_bar(stat="identity" , aes(fill=
 
 sortby <- input$insertMeanGroup
     if (sortby != "none") {
-        df <- df[order(df$[[sortby]]),]
+        df <- df[order(df[[sortby]]),]
     }
 
 df$record <- myseq
@@ -91,7 +91,7 @@ plot <- ggplot(d, aes(x=library, y=my_y)) + geom_bar(stat="identity" , aes(fill=
 
 sortby <- input$percentMappedGroup
     if (sortby != "none") {
-        df <- df[order(df$[[sortby]]),]
+        df <- df[order(df[[sortby]]),]
     }
 
 df$record <- myseq
@@ -128,7 +128,7 @@ plot <- ggplot(d, aes(x=library, y=my_y)) + geom_bar(stat="identity" , aes(fill=
 
 sortby <- input$percentOntGroup
     if (sortby != "none") {
-        df <- df[order(df$[[sortby]]),]
+        df <- df[order(df[[sortby]]),]
     }
 
 df$record <- myseq
@@ -165,7 +165,7 @@ plot <- ggplot(d, aes(x=library, y=my_y)) + geom_bar(stat="identity" , aes(fill=
 
 sortby <- input$meanCoverageGroup
     if (sortby != "none") {
-        df <- df[order(df$[[sortby]]),]
+        df <- df[order(df[[sortby]]),]
     }
 
 df$record <- myseq

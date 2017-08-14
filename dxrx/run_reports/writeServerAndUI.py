@@ -120,7 +120,7 @@ for plot_key in plots_L:
     
     sr = """sortby <- input$%sGroup
     if (sortby != "none") {
-        df <- df[order(df$[[sortby]]),]
+        df <- df[order(df[[sortby]]),]
     }
 """ % (pD["rvar_prefix"])
     sRL.append(sr)
