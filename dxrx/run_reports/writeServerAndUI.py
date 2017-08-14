@@ -154,8 +154,23 @@ for plot_key in plots_L:
     plot <- plot + geom_hline(yintercept=t, color="red", linetype="dashed")
     plot <- plot + geom_text(aes(x=0,y=t+2,label=t ), color="red", size=2)
     
-    nFail <- nrow(d[which(d[,4] == 0),])
     
+    
+    unique.groupby <- unique(df[[sortby]])
+    
+    if (sortby != "none") {
+        for (unique.group in unique.groupby){
+            group.lines <- df[which(df[[sortby]] == unique.group),]
+            first.record <- head(group.lines , n=1)$record
+            last.record <- tail(group.lines , n=1)$record
+    
+            plot <- plot + geom_vline(xintercept=last.record+0.5 , color="gray", linetype="dashed")
+        }
+    }
+    
+    
+    
+    nFail <- nrow(d[which(d[,4] == 0),])
     if (nFail > 0) {
         plot <- plot + geom_text(data=subset(d, my_y<t), aes(x=library,y=my_y-2,label=sample,hjust="right"), color="black", size=1 , angle=90)
     }
