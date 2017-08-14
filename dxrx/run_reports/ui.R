@@ -1,4 +1,5 @@
 library(shiny)
+
 df <- read.table("/home/ubuntu/data/run_reports/project_only/dxrx.all.lanes.tsv",header=TRUE,sep="\t")
 
 shinyUI(fluidPage(

@@ -6,9 +6,9 @@ gg_color_hue <- function(n) {
   hcl(h = hues, l = 65, c = 100)[1:n]
 }
 
-df <- read.table("/home/ubuntu/data/run_reports/project_only/dxrx.all.lanes.tsv",header=TRUE,sep="\t")
-
 shinyServer(function(input, output) {
+
+df <- read.table("/home/ubuntu/data/run_reports/project_only/dxrx.all.lanes.tsv",header=TRUE,sep="\t")
 
     output$totalReadsPlot <- renderPlot({
     myseq <- seq(from=1,to=nrow(df))

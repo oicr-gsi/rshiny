@@ -98,9 +98,9 @@ gg_color_hue <- function(n) {
   hcl(h = hues, l = 65, c = 100)[1:n]
 }
 
-df <- read.table("/home/ubuntu/data/run_reports/project_only/dxrx.all.lanes.tsv",header=TRUE,sep="\\t")
-
 shinyServer(function(input, output) {
+
+df <- read.table("/home/ubuntu/data/run_reports/project_only/dxrx.all.lanes.tsv",header=TRUE,sep="\\t")
 """
 sRL.append(sr)
 
@@ -174,6 +174,7 @@ sRL.append(sr)
 
 ###INITIAL RSHINY UI R CODE
 ur = """library(shiny)
+
 df <- read.table("/home/ubuntu/data/run_reports/project_only/dxrx.all.lanes.tsv",header=TRUE,sep="\\t")
 
 shinyUI(fluidPage(
