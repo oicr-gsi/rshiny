@@ -16,12 +16,8 @@ df <- read.table("/home/ubuntu/data/run_reports/project_only/dxrx.all.lanes.tsv"
     t <- input$totalReadsFailThreshold
 
 sortby <- input$totalReadsGroup
-    if (sortby == "Run") {
-        df <- df[order(df$Run),]
-    } else if (sortby == "Lane") {
-        df <- df[order(df$Lane),]
-    } else if (sortby == "Run_Lane") {
-        df <- df[order(df$Run_Lane),]
+    if (sortby != "none") {
+        df <- df[order(df$[[sortby]]),]
     }
 
 df$record <- myseq
@@ -57,12 +53,8 @@ plot <- ggplot(d, aes(x=library, y=my_y)) + geom_bar(stat="identity" , aes(fill=
     t <- input$insertMeanFailThreshold
 
 sortby <- input$insertMeanGroup
-    if (sortby == "Run") {
-        df <- df[order(df$Run),]
-    } else if (sortby == "Lane") {
-        df <- df[order(df$Lane),]
-    } else if (sortby == "Run_Lane") {
-        df <- df[order(df$Run_Lane),]
+    if (sortby != "none") {
+        df <- df[order(df$[[sortby]]),]
     }
 
 df$record <- myseq
@@ -98,12 +90,8 @@ plot <- ggplot(d, aes(x=library, y=my_y)) + geom_bar(stat="identity" , aes(fill=
     t <- input$percentMappedFailThreshold
 
 sortby <- input$percentMappedGroup
-    if (sortby == "Run") {
-        df <- df[order(df$Run),]
-    } else if (sortby == "Lane") {
-        df <- df[order(df$Lane),]
-    } else if (sortby == "Run_Lane") {
-        df <- df[order(df$Run_Lane),]
+    if (sortby != "none") {
+        df <- df[order(df$[[sortby]]),]
     }
 
 df$record <- myseq
@@ -139,12 +127,8 @@ plot <- ggplot(d, aes(x=library, y=my_y)) + geom_bar(stat="identity" , aes(fill=
     t <- input$percentOntFailThreshold
 
 sortby <- input$percentOntGroup
-    if (sortby == "Run") {
-        df <- df[order(df$Run),]
-    } else if (sortby == "Lane") {
-        df <- df[order(df$Lane),]
-    } else if (sortby == "Run_Lane") {
-        df <- df[order(df$Run_Lane),]
+    if (sortby != "none") {
+        df <- df[order(df$[[sortby]]),]
     }
 
 df$record <- myseq
@@ -180,12 +164,8 @@ plot <- ggplot(d, aes(x=library, y=my_y)) + geom_bar(stat="identity" , aes(fill=
     t <- input$meanCoverageFailThreshold
 
 sortby <- input$meanCoverageGroup
-    if (sortby == "Run") {
-        df <- df[order(df$Run),]
-    } else if (sortby == "Lane") {
-        df <- df[order(df$Lane),]
-    } else if (sortby == "Run_Lane") {
-        df <- df[order(df$Run_Lane),]
+    if (sortby != "none") {
+        df <- df[order(df$[[sortby]]),]
     }
 
 df$record <- myseq

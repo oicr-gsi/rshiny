@@ -119,12 +119,8 @@ for plot_key in plots_L:
     
     
     sr = """sortby <- input$%sGroup
-    if (sortby == "Run") {
-        df <- df[order(df$Run),]
-    } else if (sortby == "Lane") {
-        df <- df[order(df$Lane),]
-    } else if (sortby == "Run_Lane") {
-        df <- df[order(df$Run_Lane),]
+    if (sortby != "none") {
+        df <- df[order(df$[[sortby]]),]
     }
 """ % (pD["rvar_prefix"])
     sRL.append(sr)
