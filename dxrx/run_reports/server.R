@@ -21,8 +21,8 @@ df <- read.table("/home/ubuntu/data/run_reports/project_only/dxrx.all.lanes.tsv"
     colnames(d) <- c("sample","library","my_y","threshold")
 windowHeight <- max(d$my_y) * 1.10
 plot <- ggplot(d, aes(x=library, y=my_y)) + geom_bar(stat="identity" , aes(fill=threshold) ) + labs(x="all libraries", y="total reads (pass filter)") + scale_y_continuous(limits=c(0.0,windowHeight))
-    plot <- plotBuild + geom_hline(yintercept=t, color="red", linetype="dashed")
-    plot <- plotBuild + geom_text(aes(x=0,y=t+2,label=t ), color="red", size=2)
+    plot <- plot + geom_hline(yintercept=t, color="red", linetype="dashed")
+    plot <- plot + geom_text(aes(x=0,y=t+2,label=t ), color="red", size=2)
     
     nFail <- nrow(d[which(d[,4] == 0),])
     
@@ -51,8 +51,8 @@ plot <- ggplot(d, aes(x=library, y=my_y)) + geom_bar(stat="identity" , aes(fill=
     colnames(d) <- c("sample","library","my_y","threshold")
 windowHeight <- max(d$my_y) * 1.10
 plot <- ggplot(d, aes(x=library, y=my_y)) + geom_bar(stat="identity" , aes(fill=threshold) ) + labs(x="all libraries", y="mean insert size") + scale_y_continuous(limits=c(0.0,windowHeight))
-    plot <- plotBuild + geom_hline(yintercept=t, color="red", linetype="dashed")
-    plot <- plotBuild + geom_text(aes(x=0,y=t+2,label=t ), color="red", size=2)
+    plot <- plot + geom_hline(yintercept=t, color="red", linetype="dashed")
+    plot <- plot + geom_text(aes(x=0,y=t+2,label=t ), color="red", size=2)
     
     nFail <- nrow(d[which(d[,4] == 0),])
     
@@ -81,8 +81,8 @@ plot <- ggplot(d, aes(x=library, y=my_y)) + geom_bar(stat="identity" , aes(fill=
     colnames(d) <- c("sample","library","my_y","threshold")
 windowHeight <- 100.0
 plot <- ggplot(d, aes(x=library, y=my_y)) + geom_bar(stat="identity" , aes(fill=threshold) ) + labs(x="all libraries", y="percent of reads mapped to hg19") + scale_y_continuous(limits=c(0.0,windowHeight))
-    plot <- plotBuild + geom_hline(yintercept=t, color="red", linetype="dashed")
-    plot <- plotBuild + geom_text(aes(x=0,y=t+2,label=t ), color="red", size=2)
+    plot <- plot + geom_hline(yintercept=t, color="red", linetype="dashed")
+    plot <- plot + geom_text(aes(x=0,y=t+2,label=t ), color="red", size=2)
     
     nFail <- nrow(d[which(d[,4] == 0),])
     
@@ -111,8 +111,8 @@ plot <- ggplot(d, aes(x=library, y=my_y)) + geom_bar(stat="identity" , aes(fill=
     colnames(d) <- c("sample","library","my_y","threshold")
 windowHeight <- 100.0
 plot <- ggplot(d, aes(x=library, y=my_y)) + geom_bar(stat="identity" , aes(fill=threshold) ) + labs(x="all libraries", y="percent of mapped reads on target") + scale_y_continuous(limits=c(0.0,windowHeight))
-    plot <- plotBuild + geom_hline(yintercept=t, color="red", linetype="dashed")
-    plot <- plotBuild + geom_text(aes(x=0,y=t+2,label=t ), color="red", size=2)
+    plot <- plot + geom_hline(yintercept=t, color="red", linetype="dashed")
+    plot <- plot + geom_text(aes(x=0,y=t+2,label=t ), color="red", size=2)
     
     nFail <- nrow(d[which(d[,4] == 0),])
     
@@ -141,8 +141,8 @@ plot <- ggplot(d, aes(x=library, y=my_y)) + geom_bar(stat="identity" , aes(fill=
     colnames(d) <- c("sample","library","my_y","threshold")
 windowHeight <- max(d$my_y) * 1.10
 plot <- ggplot(d, aes(x=library, y=my_y)) + geom_bar(stat="identity" , aes(fill=threshold) ) + labs(x="all libraries", y="mean coverage") + scale_y_continuous(limits=c(0.0,windowHeight))
-    plot <- plotBuild + geom_hline(yintercept=t, color="red", linetype="dashed")
-    plot <- plotBuild + geom_text(aes(x=0,y=t+2,label=t ), color="red", size=2)
+    plot <- plot + geom_hline(yintercept=t, color="red", linetype="dashed")
+    plot <- plot + geom_text(aes(x=0,y=t+2,label=t ), color="red", size=2)
     
     nFail <- nrow(d[which(d[,4] == 0),])
     

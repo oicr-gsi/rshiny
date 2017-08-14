@@ -137,8 +137,8 @@ for plot_key in plots_L:
     sRL.append(sr)
     
     sr="""plot <- ggplot(d, aes(x=library, y=my_y)) + geom_bar(stat="identity" , aes(fill=threshold) ) + labs(x="all libraries", y="%s") + scale_y_continuous(limits=c(0.0,windowHeight))
-    plot <- plotBuild + geom_hline(yintercept=t, color="red", linetype="dashed")
-    plot <- plotBuild + geom_text(aes(x=0,y=t+2,label=t ), color="red", size=2)
+    plot <- plot + geom_hline(yintercept=t, color="red", linetype="dashed")
+    plot <- plot + geom_text(aes(x=0,y=t+2,label=t ), color="red", size=2)
     
     nFail <- nrow(d[which(d[,4] == 0),])
     
