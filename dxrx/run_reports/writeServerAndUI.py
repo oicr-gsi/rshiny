@@ -112,10 +112,20 @@ for plot_key in plots_L:
     
     sr = """    output$%sPlot <- renderPlot({
     myseq <- seq(from=1,to=nrow(df))
-    df$record <- myseq
 
     t <- input$%sFailThreshold
 """ % (pD["rvar_prefix"] , pD["rvar_prefix"])
+    sRL.append(sr)
+    
+    
+    sr = """sortby <- input$%sGroup
+    if (sortby != "none") {
+        df <- df[order(df[[sortby]]),]
+    }
+""" % (pD["rvar_prefix"])
+    sRL.append(sr)
+    
+    sr = "df$record <- myseq"
     sRL.append(sr)
     
     sr = ""
@@ -125,9 +135,13 @@ for plot_key in plots_L:
         sr = '''    d <- data.frame(df$Library , df$record, as.numeric(gsub("%s","",df$%s)))''' % (pD["text_to_remove"] , pD["r_column"])
     sRL.append(sr)
     
-    sr = """    d$group <- as.factor((d[,3] > t)*1)
+    sr = """d$group <- as.factor((d[,3] > t)*1)
+    
+    
     colnames(d) <- c("sample","library","my_y","threshold")"""
     sRL.append(sr)
+    
+    #df$record <- myseq
     
     sr=""
     if pD["window_height_type"] == "dynamic":
@@ -136,26 +150,41 @@ for plot_key in plots_L:
         sr = "windowHeight <- %s" % (pD["window_height_max"])
     sRL.append(sr)
     
-    sr="""nFail <- nrow(d[which(d[,4] == 0),])
+    sr="""plot <- ggplot(d, aes(x=library, y=my_y)) + geom_bar(stat="identity" , aes(fill=threshold) ) + labs(x="all libraries", y="%s") + scale_y_continuous(limits=c(0.0,windowHeight))
+    plot <- plot + geom_hline(yintercept=t, color="red", linetype="dashed")
+    plot <- plot + geom_text(aes(x=0,y=t+2,label=t ), color="red", size=2)
     
-    if (nFail == 0) {
-      ggplot(d, aes(x=library, y=my_y)) + geom_bar(stat="identity" , aes(fill=threshold) ) + labs(x="all libraries", y="%s") + scale_y_continuous(limits=c(0.0,windowHeight)) +
-        geom_hline(yintercept=t, color="red", linetype="dashed") +
-        geom_text(aes(x=0,y=t+2,label=t ), color="red", size=2) +
-        theme(legend.position="none", axis.title.y=element_text(size=6), axis.title.x=element_text(size=6), axis.text.y=element_text(size=4), axis.text.x=element_text(size=4)) +
-        scale_fill_manual(values=c("0" = gg_color_hue(2)[1], "1" = gg_color_hue(2)[2]))
+    
+    
+    unique.groupby <- unique(df[[sortby]])
+    
+    if (sortby != "none") {
+        for (unique.group in unique.groupby){
+            group.lines <- df[which(df[[sortby]] == unique.group),]
+            first.record <- head(group.lines , n=1)$record
+            last.record <- tail(group.lines , n=1)$record
+    
+            plot <- plot + geom_vline(xintercept=last.record+0.5 , color="gray", linetype="dashed")
+        }
+    }
+    
+    
+    
+    nFail <- nrow(d[which(d[,4] == 0),])
+    if (nFail > 0) {
+        plot <- plot + geom_text(data=subset(d, my_y<t), aes(x=library,y=my_y-2,label=sample,hjust="right"), color="black", size=1 , angle=90)
+    }
       
-    } else {
-      ggplot(d, aes(x=library, y=my_y)) + geom_bar(stat="identity" , aes(fill=threshold) ) + labs(x="all libraries", y="%s") + scale_y_continuous(limits=c(0.0,windowHeight)) +
-        geom_hline(yintercept=t, color="red", linetype="dashed") +
-        geom_text(data=subset(d, my_y<t), aes(x=library,y=my_y-2,label=sample,hjust="right"), color="black", size=1 , angle=90) +
-        geom_text(aes(x=0,y=t+2,label=t ), color="red", size=2) +
-        theme(legend.position="none", axis.title.y=element_text(size=6), axis.title.x=element_text(size=6), axis.text.y=element_text(size=4), axis.text.x=element_text(size=4)) +
-        scale_fill_manual(values=c("0" = gg_color_hue(2)[1], "1" = gg_color_hue(2)[2]))
-    }  
+    plot <- plot + theme(legend.position="none", axis.title.y=element_text(size=6), axis.title.x=element_text(size=6), axis.text.y=element_text(size=4), axis.text.x=element_text(size=4))
+    plot <- plot + scale_fill_manual(values=c("0" = gg_color_hue(2)[1], "1" = gg_color_hue(2)[2]))
+    
+    plot
+        
+        
+      
     
     
-    })""" % (pD["y_label"] , pD["y_label"])
+    })""" % (pD["y_label"])
     sRL.append(sr)
 
 
@@ -177,8 +206,8 @@ ur = """library(shiny)
 
 df <- read.table("/home/ubuntu/data/run_reports/project_only/dxrx.all.lanes.tsv",header=TRUE,sep="\\t")
 
-shinyUI(fluidPage(
-    titlePanel("DxRx Run Report Analysis"),
+shinyUI(fluidPage( theme = "styles.css",
+    headerPanel("DxRx Run Report Analysis"),
     hr(), 
 """
 uRL.append(ur)
@@ -199,7 +228,7 @@ for plot_key in plots_L:
     
     
     
-    ur = """    headerPanel("%s"),
+    ur = """    titlePanel("%s"),
     plotOutput("%sPlot"),
     hr(),
     fluidRow(
@@ -213,9 +242,9 @@ for plot_key in plots_L:
         column(3,
             selectInput("%sGroup", "Group by:",
                 c("None" = "none",
-                "Run" = "run",
-                "Run and Lane" = "run_and_lane")
-                
+                "Run" = "Run",
+                "Lane" = "Lane",
+                "Run and Lane" = "Run_Lane")
                 
             )
             
