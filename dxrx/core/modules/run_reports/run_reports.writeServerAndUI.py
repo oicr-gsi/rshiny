@@ -100,7 +100,7 @@ gg_color_hue <- function(n) {
 \thcl(h = hues, l = 65, c = 100)[1:n]
 }
 
-df <- read.table("/home/ubuntu/data/run_reports/project_only/dxrx.all.lanes.tsv",header=TRUE,sep="\\t")
+df <- read.table("/home/ubuntu/data/dxrx/core/run_reports/project_only/dxrx.all.lanes.tsv",header=TRUE,sep="\\t")
 """
 
 sRL.append(sr)
@@ -181,7 +181,7 @@ for plot_key in plots_L:
 
 ###INITIAL RSHINY UI R CODE
 ur = """library(shiny)
-df <- read.table("/home/ubuntu/data/run_reports/project_only/dxrx.all.lanes.tsv",header=TRUE,sep="\\t")
+df <- read.table("/home/ubuntu/data/dxrx/core/run_reports/project_only/dxrx.all.lanes.tsv",header=TRUE,sep="\\t")
 
 shinyUI(fluidPage(
 \theaderPanel("DxRx Run Report Analysis"),
