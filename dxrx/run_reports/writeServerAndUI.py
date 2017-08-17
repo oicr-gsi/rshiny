@@ -206,8 +206,8 @@ ur = """library(shiny)
 
 df <- read.table("/home/ubuntu/data/run_reports/project_only/dxrx.all.lanes.tsv",header=TRUE,sep="\\t")
 
-shinyUI(fluidPage(
-    titlePanel("DxRx Run Report Analysis"),
+shinyUI(fluidPage( theme = "styles.css",
+    headerPanel("DxRx Run Report Analysis"),
     hr(), 
 """
 uRL.append(ur)
@@ -228,7 +228,7 @@ for plot_key in plots_L:
     
     
     
-    ur = """    headerPanel("%s"),
+    ur = """    titlePanel("%s"),
     plotOutput("%sPlot"),
     hr(),
     fluidRow(
