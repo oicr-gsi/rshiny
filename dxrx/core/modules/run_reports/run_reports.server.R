@@ -6,9 +6,9 @@ gg_color_hue <- function(n) {
   hcl(h = hues, l = 65, c = 100)[1:n]
 }
 
-shinyServer(function(input, output) {
-
 df <- read.table("/home/ubuntu/data/run_reports/project_only/dxrx.all.lanes.tsv",header=TRUE,sep="\t")
+
+shinyServer(function(input,output) {
 
     output$totalReadsPlot <- renderPlot({
     myseq <- seq(from=1,to=nrow(df))
@@ -270,5 +270,5 @@ plot <- ggplot(d, aes(x=library, y=my_y)) + geom_bar(stat="identity" , aes(fill=
     
     
     })
-})
 
+})
