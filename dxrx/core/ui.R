@@ -12,7 +12,7 @@ shinyUI(
                 h4("Run Reports"),
                 "library-level stats compiled from html run reports",
                 h4("Cumulative Reports"),
-                "sample-level stats compiled from project cumulative report (coming soon)" 
+                "sample-level stats compiled from project cumulative report" 
             )  
         ),
         navbarMenu("Modules",
@@ -22,6 +22,7 @@ shinyUI(
             tabPanel("Cumulative Reports",
                 source("modules/cumulative_reports/cumulative_reports.ui.R")
             )
+            
             
         )
     )
