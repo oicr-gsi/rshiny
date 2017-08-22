@@ -1,0 +1,6 @@
+app-instance:
+    app_dir: /home/ubuntu/git/rshiny/templates/core
+    project: DxRx
+    data_dir: /home/ubuntu/data/dxrx/core
+    instance_dir: /home/ubuntu/git/rshiny-instances/projects/dxrx/core
+    shiny_dir: /srv/shiny-server/instances/dxrx

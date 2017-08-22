@@ -23,6 +23,10 @@ plots_L = [
     "mean-coverage"
 ]
 
+xyplots_L = [
+    "percent-on-target-vs-total-reads"
+]
+
 #sRL: code for server.R app
 #uRL: code for ui.R app
 sRL = []
@@ -91,6 +95,28 @@ plots_D = {
     }
 }
 
+xyplots_D = {
+    "percent-on-target-vs-total-reads" : {
+        "rvar_prefix" : "onTargetVSTotalReads",
+        
+        "x_r_column" : "PF.Reads",
+        "x_text_to_remove" : ",",
+        "x_label" : "total reads (pass filter)",
+        
+        "y_r_column" : "Percent.mapped.on.Target",
+        "y_text_to_remove" : "%",
+        "y_label" : "percent of mapped reads on target",
+        
+        "window_width_type" : "dynamic",
+        "window_width_max" : "na",
+        
+        "window_height_type" : "fixed",
+        "window_height_max" : "100.0",
+        
+        "ui_title" : "Percent on Target vs Total Reads (Pass filter)"
+    }
+}
+
 tab_var = "runReports" #variable indicating the tab, so that back-end variable names do not overlap with those from other tabs
 
 ###BEGINNING OF SERVER R CODE
@@ -111,6 +137,8 @@ sRL.append(sr)
 
 
 ###PER PLOT RSHINY SERVER R CODE
+
+#BAR PLOTS
 for plot_key in plots_L:
     pD = plots_D[plot_key]
     tab_plot_var = tab_var + "_" + pD["rvar_prefix"]
@@ -177,6 +205,53 @@ for plot_key in plots_L:
 })""" % (pD["y_label"])
     sRL.append(sr)
 
+
+#XY PLOTS
+for xyplot_key in xyplots_L:
+    pD = xyplots_D[xyplot_key]
+    tab_plot_var = tab_var + "_" + pD["rvar_prefix"]
+
+    sr = """output$%sPlot <- renderPlot({
+""" % (tab_plot_var)
+    sRL.append(sr)
+    
+    sr = "\td <- data.frame(rrdf$Library, "
+    
+    if pD["x_text_to_remove"] == "None":
+        sr = sr + '''rrdf$%s, ''' % (pD["x_r_column"])
+    else:
+        sr = sr + '''as.numeric(gsub("%s","",rrdf$%s)), ''' % (pD["x_text_to_remove"] , pD["x_r_column"])
+        
+    if pD["y_text_to_remove"] == "None":
+        sr = sr + '''rrdf$%s)''' % (pD["y_r_column"])
+    else:
+        sr = sr + '''as.numeric(gsub("%s","",rrdf$%s)))''' % (pD["y_text_to_remove"] , pD["y_r_column"])
+    sRL.append(sr)
+    
+    sr = """\tcolnames(d) <- c("library","my_x","my_y")"""
+    sRL.append(sr)
+    
+    
+    sr=""
+    if pD["window_width_type"] == "dynamic":
+        sr = "\twindowWidth <- max(d$my_x) * 1.10"    
+    elif pD["window_width_type"] == "fixed":
+        sr = "\twindowWidth <- %s" % (pD["window_width_max"])
+    sRL.append(sr)
+    
+    sr=""
+    if pD["window_height_type"] == "dynamic":
+        sr = "\twindowHeight <- max(d$my_y) * 1.10"    
+    elif pD["window_height_type"] == "fixed":
+        sr = "\twindowHeight <- %s" % (pD["window_height_max"])
+    sRL.append(sr)
+    
+    sr="""\tplot <- ggplot(d, aes(x=my_x, y=my_y)) + geom_point() + labs(x="%s", y="%s") + scale_x_continuous(limits=c(0.0,windowWidth)) + scale_y_continuous(limits=c(0.0,windowHeight))
+\tplot <- plot + theme(legend.position="none")
+\tplot
+})""" % (pD["x_label"] , pD["y_label"])
+    sRL.append(sr)
+    
 #END OF RSHINY SERVER R CODE
 
 
@@ -194,6 +269,8 @@ shinyUI(fluidPage(
 uRL.append(ur)
 
 ###PER PLOT RSHINY UI R CODE
+
+#BAR PLOTS
 for plot_key in plots_L:
     pD = plots_D[plot_key]
     tab_plot_var = tab_var + "_" + pD["rvar_prefix"]
@@ -235,6 +312,16 @@ for plot_key in plots_L:
                 tab_plot_var , fail_slider_max_string,\
                 tab_plot_var )
     uRL.append(ur)
+    
+for xyplot_key in xyplots_L:
+    pD = xyplots_D[xyplot_key]
+    tab_plot_var = tab_var + "_" + pD["rvar_prefix"]
+    
+    ur = """\ttitlePanel("%s"),
+\tplotOutput("%sPlot", height = "80vh"),
+\thr(),""" % (pD["ui_title"] , tab_plot_var)
+    uRL.append(ur)
+
 
 toreplace = uRL[-1]
 uRL.pop()
