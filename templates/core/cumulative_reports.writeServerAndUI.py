@@ -131,7 +131,7 @@ gg_color_hue <- function(n) {
 \thcl(h = hues, l = 65, c = 100)[1:n]
 }
 
-df <- read.table("%s/cumulative_reports/dxrx.cumulative.report.tsv",header=TRUE,sep="\\t")
+df <- read.table("%s/cumulative_reports/cumulative.report.tsv",header=TRUE,sep="\\t")
 """ % (data_dir)
 
 sRL.append(sr)
@@ -209,12 +209,12 @@ for plot_key in plots_L:
 
 ###INITIAL RSHINY UI R CODE
 ur = """library(shiny)
-df <- read.table("%s/cumulative_reports/dxrx.cumulative.report.tsv",header=TRUE,sep="\\t")
+df <- read.table("%s/cumulative_reports/cumulative.report.tsv",header=TRUE,sep="\\t")
 
 shinyUI(fluidPage(
-\theaderPanel("DxRx Cumulative Report Analysis"),
+\theaderPanel("%s Cumulative Report Analysis"),
 \thr(), 
-""" % (data_dir)
+""" % (data_dir, project)
 
 uRL.append(ur)
 
