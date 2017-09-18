@@ -1,4 +1,5 @@
 library(shiny)
+library(shinyBS)
 
 shinyUI(
     navbarPage(theme="VAR_INSTANCE_DIR/www/styles.css",
