@@ -158,16 +158,37 @@ for plot_key in plots_L:
         fail_slider_max_string = pD["window_height_max"]
     
     #syntax to render collapsable side bar and also the main plot of interest
+    
     sr = """output$%sUI <- renderUI ({
 \tif (input$%sShowPanel) {
 \t\tsidebarLayout(
 \t\t\tsidebarPanel(
+
+\t\t\t\tradioButtons(
+\t\t\t\t\t"%sOrientationRadio",
+\t\t\t\t\t"Plot Orientation",
+\t\t\t\t\tc("horizontal" , "vertical")
+\t\t\t\t),
+
+\t\t\t\tradioButtons(
+\t\t\t\t\t"%sPlotTypeRadio",
+\t\t\t\t\t"Plot Type",
+\t\t\t\t\tc("point" , "bar")
+\t\t\t\t),
+
+\t\t\t\tradioButtons(
+\t\t\t\t\t"%sPlotSize",
+\t\t\t\t\t"Plot Size",
+\t\t\t\t\tc("full size" , "fit to screen")
+\t\t\t\t),
+
 \t\t\t\tsliderInput("%sFailThreshold",
-\t\t\t\t\t"fail threshold:",
+\t\t\t\t\t"Fail Threshold:",
 \t\t\t\t\tmin = 0,
 \t\t\t\t\tmax = %s,
 \t\t\t\t\tvalue = 0
-\t\t\t\t),       
+\t\t\t\t),
+
 \t\t\t\tselectInput("%sGroup", "Group by:",
 \t\t\t\t\tc("None" = "none",
 \t\t\t\t\t"Run" = "Run",
@@ -181,8 +202,32 @@ for plot_key in plots_L:
 \t\t\t\t\t"Date" = "Date",
 \t\t\t\t\t"Instrument" = "Instrument",
 \t\t\t\t\t"Increment" = "Increment",
+\t\t\t\t\t"Flowcell" = "Flowcell"),
+\t\t\t\t),
+
+\t\t\t\tselectInput("%sSelectColumn1", "Select for data where:",
+\t\t\t\t\tc("None" = "none",
+\t\t\t\t\t"Run" = "Run",
+\t\t\t\t\t"Lane" = "Lane",
+\t\t\t\t\t"Run and Lane" = "Run_Lane",
+\t\t\t\t\t"Barcode" = "Barcode",
+\t\t\t\t\t"Study" = "Study",
+\t\t\t\t\t"Subject" = "Subject",
+\t\t\t\t\t"Sample" = "Sample",
+\t\t\t\t\t"Tissue Type and Origin" = "Tissue_type_origin",
+\t\t\t\t\t"Date" = "Date",
+\t\t\t\t\t"Instrument" = "Instrument",
+\t\t\t\t\t"Increment" = "Increment",
 \t\t\t\t\t"Flowcell" = "Flowcell")
-\t\t\t\t)
+\t\t\t\t),
+\t\t\t\tselectInput("%sSelectType1", "",
+\t\t\t\t\tc("equals" = "equals",
+\t\t\t\t\t"contains" = "contains",
+\t\t\t\t\t"does not equal" = "does_not_equal",
+\t\t\t\t\t"does not contain" = "does_not_contain")
+\t\t\t\t),
+\t\t\t\ttextInput("%sSelectValue1", "", "")
+
 \t\t\t),
 \t\t\tmainPanel(
 \t\t\t\tplotlyOutput("%sPlot" , height="120vh")
@@ -192,26 +237,49 @@ for plot_key in plots_L:
 \t\tplotlyOutput("%sPlot" , height="120vh")
 \t}
 })
-""" % (tab_plot_var , tab_plot_var , tab_plot_var , fail_slider_max_string , tab_plot_var , tab_plot_var , tab_plot_var)
+""" % (tab_plot_var , tab_plot_var , tab_plot_var , tab_plot_var , tab_plot_var , tab_plot_var , fail_slider_max_string , tab_plot_var , tab_plot_var , tab_plot_var , tab_plot_var , tab_plot_var , tab_plot_var)
     sRL.append(sr)
+
+
+    #TEST NEW UI LAYOUT
+    """
+"""
     
     
     #BACK-END FUNCTION TO GENERATE PLOT
     sr = """output$%sPlot <- renderPlotly({
-\tmyseq <- seq(from=1,to=nrow(rrdf))
 \tt <- input$%sFailThreshold
 """ % (tab_plot_var , tab_plot_var)
     sRL.append(sr)
     
+    #IF USER-SPECIFIES SELECTION VIA UI, SELECT FOR ONLY A SUBSET OF DATA
+    sr = "\tselect_column1 <- input$%sSelectColumn1\n" % (tab_plot_var) +\
+    "\tselect_type1 <- input$%sSelectType1\n" % (tab_plot_var) +\
+    "\tselect_value1 <- input$%sSelectValue1\n" % (tab_plot_var) +\
+    """\tif (select_column1 != "none") {
+\t\tif (select_type1 == "equals") {
+\t\t\trrdf <- rrdf[which(rrdf[[select_column1]] == select_value1),]
+\t\t} else if (select_type1 == "contains") {
+\t\t\trrdf <- rrdf[which(grepl(select_value1 , rrdf[[select_column1]])),]
+\t\t} else if (select_type1 == "does_not_equal") {
+\t\t\trrdf <- rrdf[which(rrdf[[select_column1]] != select_value1),]
+\t\t} else if (select_type1 == "does_not_contain") {
+\t\t\trrdf <- rrdf[which(!grepl(select_value1 , rrdf[[select_column1]])),]
+\t\t}
+\t}"""
+    sRL.append(sr)
     
-    sr = """\tsortby <- input$%sGroup
-\tif (sortby != "none") {
-\t\trrdf <- rrdf[order(rrdf[[sortby]]),]
+    #GROUP DATA FRAME BY USER-SPECIFIED GROUP
+    sr = """\tgroupby <- input$%sGroup
+\tif (groupby != "none") {
+\t\trrdf <- rrdf[order(rrdf[[groupby]]),]
 \t}
 """ % (tab_plot_var)
     sRL.append(sr)
     
-    sr = "\trrdf$record <- myseq"
+    
+    sr = """\tmyseq <- seq(from=1,to=nrow(rrdf))
+\trrdf$record <- myseq"""
     sRL.append(sr)
     
     sr = ""
@@ -221,8 +289,8 @@ for plot_key in plots_L:
         sr = '''\td <- data.frame(rrdf$Library , rrdf$record, as.numeric(gsub("%s","",rrdf$%s)))''' % (pD["text_to_remove"] , pD["r_column"])
     sRL.append(sr)
     
-    sr = """\td$group <- as.factor((d[,3] > t)*1)
-\tcolnames(d) <- c("library","record","value","threshold")
+    sr = """\td$is_pass <- as.factor((d[,3] > t)*1)
+\tcolnames(d) <- c("library","record","value","is_pass")
 \td <- data.frame(d , rrdf)"""
     sRL.append(sr)
     
@@ -235,14 +303,21 @@ for plot_key in plots_L:
         sr = "\twindowHeight <- %s" % (pD["window_height_max"])
     sRL.append(sr)
     
-    sr="""\tplot <- ggplot(d, aes(x=record, y=value))
-\tplot <- plot + geom_bar(stat="identity" , aes(text=paste("Library:" , library , "\nRun:" , Run , "\nLane:" , Lane , "\nBarcode:",Barcode) ,fill=threshold))
+    sr="""\torientation <- input$%sOrientationRadio
+\tplot_type <- input$%sPlotTypeRadio
+
+\tplot <- ggplot(d, aes(x=record, y=value))
+\tif (plot_type == "bar") {
+\t\tplot <- plot + geom_bar(stat="identity" , aes(text=paste("Library:" , library , "\nRun:" , Run , "\nLane:" , Lane , "\nBarcode:",Barcode) ,fill=is_pass))   
+\t} else if (plot_type == "point") {
+\t\tplot <- plot + geom_point(stat="identity" , aes(text=paste("Library:" , library , "\nRun:" , Run , "\nLane:" , Lane , "\nBarcode:",Barcode) , color=is_pass))   
+\t}
+
 \tplot <- plot + labs(x="all libraries", y="%s")
 \tplot <- plot + scale_y_continuous(limits=c(0.0,windowHeight))
-\tplot <- plot + scale_x_continuous(trans="reverse")
 \tplot <- plot + geom_rect(data=NULL , aes(text=paste("threshold:", t) , x = NULL , y = NULL , xmin=0 , xmax=nrow(rrdf) , ymin=t , ymax=t), color="red" , linetype="dashed")
 \tplot <- plot + geom_text(aes(x=0,y=t+(windowHeight * 0.02),label=t ), color="red")
-\tunique.groupby <- unique(rrdf[[sortby]])
+\tunique.groupby <- unique(rrdf[[groupby]])
 
 \tfirst_records <- c()
 \tlast_records <- c()
@@ -253,10 +328,10 @@ for plot_key in plots_L:
 \ty3 <- c()
 \ty4 <- c()
     
-\tif (sortby != "none") {
+\tif (groupby != "none") {
 \t\tfor (i in 1:length(unique.groupby)){
 \t\t\tunique.group <- unique.groupby[i]
-\t\t\tgroup.lines <- rrdf[which(rrdf[[sortby]] == unique.group),]
+\t\t\tgroup.lines <- rrdf[which(rrdf[[groupby]] == unique.group),]
 \t\t\tfirst.record <- head(group.lines , n=1)$record - 0.5
 \t\t\tlast.record <- tail(group.lines , n=1)$record + 0.5
 \t\t\tcolor <- (i %s 2) + 10
@@ -274,17 +349,23 @@ for plot_key in plots_L:
         
 \t\tgroup.df <- data.frame(unique.groupby , first_records , last_records , as.factor(my_cols) , as.factor(my_cols2) , y1 , y2 , y3 , y4)
 \t\tcolnames(group.df) <- c("unique.groupby" , "first_records" , "last_records" , "color_code" , "color_code_2" , "y1" , "y2" , "y3" , "y4")
-\t\tplot <- plot + geom_rect(data=group.df , aes(text=paste(sortby , ":" , unique.groupby) , x = NULL , y = NULL , xmin=first_records , xmax=last_records , ymin=y1 , ymax=y2 , fill=color_code))
+\t\tplot <- plot + geom_rect(data=group.df , aes(text=paste(groupby , ":" , unique.groupby) , x = NULL , y = NULL , xmin=first_records , xmax=last_records , ymin=y1 , ymax=y2 , fill=color_code))
 
-\t\tplot <- plot + geom_rect(data=group.df , aes(text=paste(sortby , ":" , unique.groupby) , x = NULL , y = NULL , xmin=first_records , xmax=first_records , ymin=y3 , ymax=y4 , alpha=0.1), color="gray")
-\t\tplot <- plot + geom_rect(data=group.df , aes(text=paste(sortby , ":" , unique.groupby) , x = NULL , y = NULL , xmin=tail(last_records,n=1) , xmax=tail(last_records,n=1) , ymin=y3 , ymax=y4 , alpha=0.1), color="gray")  
+\t\tplot <- plot + geom_rect(data=group.df , aes(text=paste(groupby , ":" , unique.groupby) , x = NULL , y = NULL , xmin=first_records , xmax=first_records , ymin=y3 , ymax=y4 , alpha=0.1), color="gray")
+\t\tplot <- plot + geom_rect(data=group.df , aes(text=paste(groupby , ":" , unique.groupby) , x = NULL , y = NULL , xmin=tail(last_records,n=1) , xmax=tail(last_records,n=1) , ymin=y3 , ymax=y4 , alpha=0.1), color="gray")  
 \t}
 
 \tplot <- plot + theme(legend.position="none" , axis.text.y = element_text(angle=45))
 \tplot <- plot + scale_fill_manual(values=c("0" = gg_color_hue(2)[1], "1" = gg_color_hue(2)[2] , "10" = gg_color_hue(6)[3] , "11" = gg_color_hue(10)[9] , "20" = "gray" , "21" = "lightgray"))
-\tplot <- plot + coord_flip()
+\tplot <- plot + scale_color_manual(values=c("0" = gg_color_hue(2)[1], "1" = gg_color_hue(2)[2] , "10" = gg_color_hue(6)[3] , "11" = gg_color_hue(10)[9] , "20" = "gray" , "21" = "lightgray"))
+
+\tif (orientation == "horizontal") {
+\t\tplot <- plot + scale_x_continuous(trans="reverse")
+\t\tplot <- plot + coord_flip()    
+\t}
+
 \tggplotly(plot)
-})""" % (pD["y_label"] , "%"*2 , "%"*2)
+})""" % (tab_plot_var , tab_plot_var , pD["y_label"] , "%"*2 , "%"*2)
     sRL.append(sr)
 
 
